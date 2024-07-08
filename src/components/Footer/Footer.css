@@ -1,0 +1,10 @@
+.Footer {
+  background-color: #e9f6e2;
+  color: #181818;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  font-family:courier,arial,helvetica;
+  font-weight: bold;
+  font-size: 1.2em;
+}

@@ -1,0 +1,19 @@
+
+.Content {
+  background-color: #93c996;
+  padding: 20px;
+  display: flex;
+}
+
+.Content ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.Content ul li {
+  font-size: 1.2em;
+  padding: 10px;
+}
