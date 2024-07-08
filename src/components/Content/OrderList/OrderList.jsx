@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc, deleteField } from 'firebase/firestore';
-import db from '../../../../firebaseConfig';
+import db from '../../../../FirebaseConfig';
 import ConfirmModel from './ModelConfirm/ModelConfirm';
 import OrderPopup from './OrderPopup/OrderPopup';
 import DetailPopup from './DetailPopup/DetailPopup';
