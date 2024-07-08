@@ -1,5 +1,5 @@
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import db from '../../../../../firebaseConfig';
+import db from '../../../../../FirebaseConfig';
 
 const UpdateProductQuantity = async (CollectionName, IDDoc, ProductType, Quantity, CustomerName, Notes) => {
   const ProductRef = doc(db, CollectionName, IDDoc);

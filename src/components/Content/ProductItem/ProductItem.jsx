@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ProductItem.css';
 import Popup from './Popup/Popup';
-import { UpdateProductQuantity } from './Firestore/firestoreService';
+import { UpdateProductQuantity } from './Firestore/FirestoreService';
 
 function ProductItem({ Product, CollectionName, IDDoc }) {
   const { name, image, price } = Product;
