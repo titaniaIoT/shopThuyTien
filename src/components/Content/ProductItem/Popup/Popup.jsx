@@ -7,7 +7,10 @@ const Popup = ({ OnClose, OnConfirm, ProductType }) => {
   const [CustomerName, SetCustomerName] = useState('');
 
   const HandleChangeQuantity = (event) => {
-    SetQuantity(parseInt(event.target.value, 10));
+    const value = parseInt(event.target.value, 10);
+    if (value > 0) {
+      SetQuantity(value);
+    }
   };
 
   const HandleChangeNotes = (event) => {
@@ -19,22 +22,31 @@ const Popup = ({ OnClose, OnConfirm, ProductType }) => {
   };
 
   const HandleConfirm = () => {
-    OnConfirm(Quantity, Notes, CustomerName, ProductType);
+    if (CustomerName.trim() === '') {
+      alert('Vui lòng nhập tên khách hàng');
+      return;
+    }
+    OnConfirm(Quantity, Notes, CustomerName);
     OnClose();
   };
 
   return (
-    <div className="Popup">
-      <div className="PopupInner">
+    <div className="PopupOverlay" onClick={OnClose}>
+      <div className="PopupInner" onClick={(e) => e.stopPropagation()}>
         <h2>Nhập số lượng:</h2>
-        <input type="number" value={Quantity} onChange={HandleChangeQuantity} />
+        <input
+          type="number"
+          value={Quantity}
+          onChange={HandleChangeQuantity}
+          min="1"
+        />
 
         <h2>Ghi chú:</h2>
         <input
           type="text"
           value={Notes}
           onChange={HandleChangeNotes}
-          placeholder="Ghi chú: ít đá, ít đường,..."
+          placeholder="Ít đá, ít đường,..."
         />
 
         <h2>Tên khách:</h2>
@@ -42,7 +54,7 @@ const Popup = ({ OnClose, OnConfirm, ProductType }) => {
           type="text"
           value={CustomerName}
           onChange={HandleChangeCustomerName}
-          placeholder="Tên khách hàng"
+          placeholder="Nhập tên khách hàng"
         />
 
         <div className="ButtonContainer">

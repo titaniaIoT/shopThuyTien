@@ -1,26 +1,23 @@
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import db from '../../../../../FirebaseConfig';
 
-const UpdateProductQuantity = async (CollectionName, IDDoc, ProductType, Quantity, CustomerName, Notes) => {
-  const ProductRef = doc(db, CollectionName, IDDoc);
-  const ProductSnap = await getDoc(ProductRef);
+const UpdateProductQuantity = async (ProductType, Quantity, CustomerName, Notes) => {
+  const OrderRef = doc(db, "Order", "hRZcMkkijPa1fw56o96l");
 
-  if (ProductSnap.exists()) {
-    const CurrentQuantity = ProductSnap.data()[ProductType] || 0;
-    await updateDoc(ProductRef, {
-      [ProductType]: CurrentQuantity + Quantity
-    });
-    console.log('Cập nhật đơn hàng thành công!');
-  } else {
-    console.log('Lỗi không tìm thấy collection hoặc document tương ứng!');
-  }
   try {
-    const DetailString = `${Quantity} ${ProductType} ${Notes}`;
-    const DataRef = doc(db, "DetailData", "SNGgldvvjQNgkhXoQj86"); 
-    await updateDoc(DataRef, { [CustomerName]: DetailString }); 
-    console.log('Cập nhật chi tiết đơn hàng thành công!');
+    // Tạo dữ liệu để set vào document
+    const orderData = {
+      [CustomerName]: {
+        [ProductType]: Quantity,
+        "Ghi chú": Notes
+      }
+    };
+
+    // Thực hiện set dữ liệu vào document "Order" và merge với dữ liệu hiện tại
+    await setDoc(OrderRef, orderData, { merge: true });
+    console.log('Cập nhật đơn hàng thành công!');
   } catch (error) {
-    console.error('Lỗi khi cập nhật DetailData:', error);
+    console.error('Lỗi khi cập nhật đơn hàng:', error);
   }
 };
 

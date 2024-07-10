@@ -4,7 +4,7 @@ import './ModelConfirm.css';
 
 function ConfirmModel({ Message, OnDeleteConfirm, OnCancelDelete }) {
   return (
-    <div className="ModelOverlay">
+    <div className="ModelOverlay" onClick={OnCancelDelete}>
       <div className="Model">
         <p>{Message}</p>
         <div className="ModelButtons">

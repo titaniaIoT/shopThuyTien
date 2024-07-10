@@ -5,8 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faSearch, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 function Header({ ChangeMenu }) {
-  const HandleClick = (Category) => {
-    console.log("Clicked:", Category); 
+  const HandleClick = (Category) => { 
     ChangeMenu(Category);
   };
 

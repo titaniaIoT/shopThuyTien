@@ -1,43 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { doc, getDoc, updateDoc, deleteField } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, deleteField } from 'firebase/firestore';
 import db from '../../../../FirebaseConfig';
-import ConfirmModel from './ModelConfirm/ModelConfirm';
 import OrderPopup from './OrderPopup/OrderPopup';
-import DetailPopup from './DetailPopup/DetailPopup';
+import ConfirmModel from './ModelConfirm/ModelConfirm';
 import './OrderList.css';
 
 function OrderList() {
-  const [DrinksOrders, SetDrinksOrders] = useState({});
-  const [FoodOrders, SetFoodOrders] = useState({});
-  const [IsLoading, SetLoading] = useState(true);
-  const [ShowModel, SetShowModel] = useState(false);
-  const [PendingDeletion, SetPendingDeletion] = useState({ Category: '', ProductId: '' });
-  const [DetailData, SetDetailData] = useState({});
-  const [ShowDetailPopup, SetShowDetailPopup] = useState(false);
-  const [ShowOrderPopup, SetShowOrderPopup] = useState(false); 
-  const [OrderData, SetOrderData] = useState([]); 
-  const [ShowConfirmOrder, SetShowConfirmOrder] = useState(false); 
+  const [OrderData, SetOrderData] = useState([]);
+  const [Loading, SetLoading] = useState(true);
+  const [ShowOrderPopup, SetShowOrderPopup] = useState(false);
+  const [ShowConfirmModel, SetShowConfirmModel] = useState(false);
+  const [ShowOrderConfirmModel, SetShowOrderConfirmModel] = useState(false);
+  const [CustomerToDelete, SetCustomerToDelete] = useState(null);
+  const [OrderIdToDelete, SetOrderIdToDelete] = useState('hRZcMkkijPa1fw56o96l');
 
   useEffect(() => {
     const FetchOrders = async () => {
       try {
-        const DrinksDocRef = doc(db, 'Drinks', 'j87KIkRo8LkfOyzUHzHx');
-        const DrinksDocSnap = await getDoc(DrinksDocRef);
-        if (DrinksDocSnap.exists()) {
-          SetDrinksOrders(DrinksDocSnap.data());
-        } else {
-          console.log('Không có dữ liệu trong Drinks!');
-        }
-
-        const FoodDocRef = doc(db, 'Food', '1Z7eiC4N3V15ggqyx51i');
-        const FoodDocSnap = await getDoc(FoodDocRef);
-        if (FoodDocSnap.exists()) {
-          SetFoodOrders(FoodDocSnap.data());
-        } else {
-          console.log('Không có dữ liệu trong Food!');
-        }
+        const OrderCollectionRef = collection(db, 'Order');
+        const Ordersnapshot = await getDocs(OrderCollectionRef);
+        const Orders = Ordersnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+        SetOrderData(Orders);
         SetLoading(false);
-
       } catch (error) {
         console.error('Lỗi fetching đơn hàng:', error);
         SetLoading(false);
@@ -46,141 +30,96 @@ function OrderList() {
     FetchOrders();
   }, []);
 
-  const HandleUpdateQuantity = async (Category, ProductId, NewQuantity) => {
-    try {
-      const DocRef = doc(db, Category, Category === 'Drinks' ? 'j87KIkRo8LkfOyzUHzHx' : '1Z7eiC4N3V15ggqyx51i');
-      const DocSnap = await getDoc(DocRef);
-
-      if (DocSnap.exists()) {
-        const FieldToUpdate = {};
-        if (NewQuantity > 0) {
-          FieldToUpdate[ProductId] = NewQuantity;
-        } else {
-          FieldToUpdate[ProductId] = deleteField();
-        }
-        await updateDoc(DocRef, FieldToUpdate);
-        console.log(`Đã cập nhật số lượng của ${ProductId} thành ${NewQuantity}`);
-
-        if (Category === 'Drinks') {
-          SetDrinksOrders(PrevState => {
-            const NewState = { ...PrevState };
-            if (NewQuantity > 0) {
-              NewState[ProductId] = NewQuantity;
-            } else {
-              delete NewState[ProductId];
-            }
-            return NewState;
-          });
-        } else if (Category === 'Food') {
-          SetFoodOrders(PrevState => {
-            const NewState = { ...PrevState };
-            if (NewQuantity > 0) {
-              NewState[ProductId] = NewQuantity;
-            } else {
-              delete NewState[ProductId];
-            }
-            return NewState;
-          });
-        }
-      } else {
-        console.error(`Tài liệu trong ${Category} với ID ${DocRef.id} không tồn tại.`);
-      }
-    } catch (error) {
-      console.error('Lỗi cập nhật số lượng: ', error);
-    }
-  };
-
-  const HandleIncrement = (Category, ProductId) => {
-    const CurrentQuantity = Category === 'Drinks' ? DrinksOrders[ProductId] : FoodOrders[ProductId];
-    const NewQuantity = CurrentQuantity + 1;
-    HandleUpdateQuantity(Category, ProductId, NewQuantity);
-  };
-
-  const HandleDecrement = (Category, ProductId) => {
-    const CurrentQuantity = Category === 'Drinks' ? DrinksOrders[ProductId] : FoodOrders[ProductId];
-    if (CurrentQuantity > 0) {
-      const NewQuantity = CurrentQuantity - 1;
-      if (NewQuantity === 0) {
-        SetPendingDeletion({ Category, ProductId });
-        SetShowModel(true);
-      } else {
-        HandleUpdateQuantity(Category, ProductId, NewQuantity);
-      }
-    }
-  };
-
-  const HandleConfirmDelete = () => {
-    HandleUpdateQuantity(PendingDeletion.Category, PendingDeletion.ProductId, 0);
-    SetShowModel(false);
-  };
-
-  const HandleCancelDelete = () => {
-    SetShowModel(false);
-  };
-
-  const HandleDetailOrder = async () => {
-    try {
-      const DataDocRef = doc(db, 'DetailData', 'SNGgldvvjQNgkhXoQj86');
-      const DataDocSnap = await getDoc(DataDocRef);
-      if (DataDocSnap.exists()) {
-        SetDetailData(DataDocSnap.data());
-        SetShowDetailPopup(true);
-      } else {
-        console.log('Không có dữ liệu trong DetailData!');
-      }
-    } catch (error) {
-      console.error('Lỗi fetching dữ liệu:', error);
-    }
-  };
-
-  const HandleCloseDetailPopup = () => {
-    SetShowDetailPopup(false);
-  };
-
-  const HandleOpenOrderPopup = () => {
-    const DrinksOrderItems = Object.entries(DrinksOrders).map(([productName, quantity]) => ({
-      productName,
-      quantity,
-    }));
-    const FoodOrderItems = Object.entries(FoodOrders).map(([productName, quantity]) => ({
-      productName,
-      quantity,
-    }));
-    const OrderData = [...DrinksOrderItems, ...FoodOrderItems];
-
-    SetOrderData(OrderData);
+  const HandlePrintOrder = () => {
     SetShowOrderPopup(true);
   };
 
-  const HandleCloseOrderPopup = () => {
+  const HandleClosePopup = () => {
     SetShowOrderPopup(false);
   };
 
-  const HandleConfirmOrder = async () => {
-    try {
-      const DetailDocRef = doc(db, 'DetailData', 'SNGgldvvjQNgkhXoQj86');
-      const DrinksDocRef = doc(db, 'Drinks', 'j87KIkRo8LkfOyzUHzHx');
-      const FoodDocRef = doc(db, 'Food', '1Z7eiC4N3V15ggqyx51i');
+  const HandleConfirmOrder = () => {
+    SetShowOrderConfirmModel(true);
+  };
 
-      await updateDoc(DetailDocRef, { ...Object.keys(DetailData).reduce((acc, key) => ({ ...acc, [key]: deleteField() }), {}) });
-      await updateDoc(DrinksDocRef, { ...Object.keys(DrinksOrders).reduce((acc, key) => ({ ...acc, [key]: deleteField() }), {}) });
-      await updateDoc(FoodDocRef, { ...Object.keys(FoodOrders).reduce((acc, key) => ({ ...acc, [key]: deleteField() }), {}) });
-
-      SetDrinksOrders({});
-      SetFoodOrders({});
-      SetOrderData({});
-      SetShowConfirmOrder(false);
-    } catch (error) {
-      console.error('Error confirming order:', error);
+  const HandleDeleteConfirm = async () => {
+    if (CustomerToDelete) {
+      const { CustomerName, OrderId } = CustomerToDelete;
+      const OrderRef = doc(db, 'Order', OrderId);
+      try {
+        await updateDoc(OrderRef, {
+          [CustomerName]: deleteField(),
+        });
+        const UpdatedOrderData = OrderData.map(order => {
+          if (order.id === OrderId && order.data[CustomerName]) {
+            delete order.data[CustomerName];
+          }
+          return order;
+        });
+        SetOrderData(UpdatedOrderData);
+        SetCustomerToDelete(null);
+        SetShowConfirmModel(false);
+      } catch (error) {
+        console.error('Lỗi khi xóa khách hàng:', error);
+      }
     }
   };
 
-  const HandleCancelConfirmOrder = () => {
-    SetShowConfirmOrder(false);
+  const HandleOrderDeleteConfirm = async () => {
+    const OrderRef = doc(db, 'Order', OrderIdToDelete);
+    try {
+      await deleteDoc(OrderRef);
+      const UpdatedOrderData = OrderData.filter(order => order.id !== OrderIdToDelete);
+      SetOrderData(UpdatedOrderData);
+      SetOrderIdToDelete(null);
+      SetShowOrderConfirmModel(false);
+    } catch (error) {
+      console.error('Lỗi khi xóa đơn hàng:', error);
+    }
   };
 
-  if (IsLoading) {
-    return <p className='Loading'>Loading...</p>;
+  const HandleCancelDelete = () => {
+    SetCustomerToDelete(null);
+    SetShowConfirmModel(false);
+    SetShowOrderConfirmModel(false);
+  };
+
+  const HandleIncrement = async (CustomerName, ProductName, OrderId) => {
+    const UpdatedOrderData = OrderData.map(order => {
+      if (order.id === OrderId && order.data[CustomerName]) {
+        if (order.data[CustomerName][ProductName]) {
+          order.data[CustomerName][ProductName] += 1;
+        }
+      }
+      return order;
+    });
+    SetOrderData(UpdatedOrderData);
+    await updateDoc(doc(db, 'Order', OrderId), {
+      [`${CustomerName}.${ProductName}`]: UpdatedOrderData.find(order => order.id === OrderId).data[CustomerName][ProductName]
+    });
+  };
+
+  const HandleDecrement = (CustomerName, ProductName, OrderId) => {
+    const order = OrderData.find(order => order.id === OrderId && order.data[CustomerName]);
+    if (order && order.data[CustomerName][ProductName] === 1) {
+      SetCustomerToDelete({ CustomerName, OrderId });
+      SetShowConfirmModel(true);
+    } else {
+      const UpdatedOrderData = OrderData.map(order => {
+        if (order.id === OrderId && order.data[CustomerName] && order.data[CustomerName][ProductName] > 1) {
+          order.data[CustomerName][ProductName] -= 1;
+        }
+        return order;
+      });
+      SetOrderData(UpdatedOrderData);
+      updateDoc(doc(db, 'Order', OrderId), {
+        [`${CustomerName}.${ProductName}`]: UpdatedOrderData.find(order => order.id === OrderId).data[CustomerName][ProductName]
+      });
+    }
+  };
+
+  if (Loading) {
+    return <p className='Loading'>Đang tải...</p>;
   }
 
   return (
@@ -190,70 +129,53 @@ function OrderList() {
         <table>
           <thead>
             <tr>
+              <th>Tên khách hàng</th>
               <th>Tên sản phẩm</th>
               <th>Số lượng</th>
+              <th>Ghi chú</th>
             </tr>
           </thead>
           <tbody>
-
-            {Object.entries(DrinksOrders).map(([key, value]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>
-                  <button onClick={() => HandleDecrement('Drinks', key)}>-</button>
-                  <span>{value}</span>
-                  <button onClick={() => HandleIncrement('Drinks', key)}>+</button>
-                </td>
-              </tr>
-            ))}
-
-            {Object.entries(FoodOrders).map(([key, value]) => (
-              <tr key={key}>
-                <td>{key}</td>
-                <td>
-                  <button onClick={() => HandleDecrement('Food', key)}>-</button>
-                  <span>{value}</span>
-                  <button onClick={() => HandleIncrement('Food', key)}>+</button>
-                </td>
-              </tr>
+            {OrderData.map((Order, OrderIndex) => (
+              Object.entries(Order.data).map(([CustomerName, Products]) => (
+                Object.entries(Products).filter(([key]) => key !== 'Ghi chú').map(([ProductName, Quantity], ProductIndex) => (
+                  <tr key={`${CustomerName}-${ProductName}-${OrderIndex}-${ProductIndex}`}>
+                    <td>{CustomerName}</td>
+                    <td>{ProductName}</td>
+                    <td>
+                      <button onClick={() => HandleDecrement(CustomerName, ProductName, Order.id)}>-</button>
+                      <span>{Quantity}</span>
+                      <button onClick={() => HandleIncrement(CustomerName, ProductName, Order.id)}>+</button>
+                    </td>
+                    <td>{Products['Ghi chú']}</td>
+                  </tr>
+                ))
+              ))
             ))}
           </tbody>
         </table>
       </div>
       <div className="ButtonOrder">
-        <button onClick={HandleDetailOrder}>Chi tiết đơn hàng</button>
-        <button onClick={HandleOpenOrderPopup}>In đơn hàng</button>
-        <button onClick={() => SetShowConfirmOrder(true)}>Xác nhận đơn hàng</button>
+        <button onClick={HandlePrintOrder}>In đơn hàng</button>
+        <button onClick={HandleConfirmOrder}>Xác nhận đơn hàng</button>
       </div>
-      {ShowModel && (
+      {ShowOrderPopup && <OrderPopup OrderData={OrderData} onClose={HandleClosePopup} />}
+      {ShowConfirmModel && (
         <ConfirmModel
-          Message="Bạn có chắc chắn muốn xóa sản phẩm này?"
-          OnDeleteConfirm={HandleConfirmDelete}
+          Message="Bạn có chắc chắn muốn xóa sản phẩm này không?"
+          OnDeleteConfirm={HandleDeleteConfirm}
           OnCancelDelete={HandleCancelDelete}
         />
       )}
-      {ShowDetailPopup && (
-        <DetailPopup
-          DetailData={DetailData}
-          OnClose={HandleCloseDetailPopup}
-        />
-      )}
-      {ShowOrderPopup && (
-        <>
-          <OrderPopup
-            OrderData={OrderData}
-            onClose={HandleCloseOrderPopup}
-          />
-        </>
-      )}
-      {ShowConfirmOrder && (
+      {ShowOrderConfirmModel && (
         <ConfirmModel
-          Message="Bạn có chắc chắn muốn xác nhận đơn hàng?"
-          OnDeleteConfirm={HandleConfirmOrder}
-          OnCancelDelete={HandleCancelConfirmOrder}
+          Message="Xác nhận đơn hàng đồng nghĩa với việc xóa toàn bộ dữ liệu của đơn hàng này, bạn chắc chắn?"
+          OnDeleteConfirm={HandleOrderDeleteConfirm}
+          OnCancelDelete={HandleCancelDelete}
         />
       )}
     </div>
   );
 }
+
 export default OrderList;

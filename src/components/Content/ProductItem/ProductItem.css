@@ -45,4 +45,23 @@
   .ProductInfo button:hover {
     background-color: #12491e;
   }
-  
+  @media all and (min-width: 220px) and (max-width: 615px) {
+    .ProductItem img {
+      width: 4em;
+      height: 4em;
+    }
+    .ProductInfo button {    
+      font-size: 0.6em;
+    }
+    .ProductInfo h3 {
+      font-size: 0.8em;
+    }
+    .ProductInfo p {
+      font-size: 0.8em;
+    }
+    .ProductItem {
+      margin: 0.5em;
+      width: 6em; 
+    }
+    
+  }

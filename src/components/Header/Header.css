@@ -77,3 +77,34 @@
   bottom: -3px;
   border-bottom: 2px solid #000;
 }
+@media all and (min-width: 220px) and (max-width: 615px) {
+  .AppHeader {
+    padding: 10px 10px;
+  }
+  .Taskbar ul {
+    display: flex;
+    flex-direction: column;
+  }
+  .AppHeader h1 {
+    font-size: 1.5em;
+  }
+  .Logo {
+    width: 2em;
+  }
+  .Icon {
+    font-size: 1em;
+  }
+  .RightHeader{
+    margin-right: 2px;
+  }
+  .Taskbar li a {
+    font-size: 12px;
+    padding: 5px 5px; 
+  }  
+  .Taskbar li  {
+    margin-left: 20px;
+  }
+  .Icon{
+    margin-left: 4px;
+  }
+}

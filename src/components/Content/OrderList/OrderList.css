@@ -9,6 +9,7 @@
 .OrderList h2 {
   text-align: center;
   font-size: 2.5em;
+  font-family: courier, arial, helvetica;
 }
 
 .TableOrder {
@@ -41,7 +42,7 @@ table tbody {
 }
 
 table tbody tr:hover {
-  background-color: #b0dcb1;
+  background-color: #c3e9c5;
 }
 
 table td button {
@@ -74,8 +75,7 @@ table td span {
 
 .ButtonOrder {
   display: flex;
-  justify-content: flex-end;
-  margin-right: 2.4em;
+  justify-content: center;
 }
 
 .ButtonOrder button {
@@ -91,4 +91,27 @@ table td span {
 
 .ButtonOrder button:hover {
   background-color: #315332;
+}
+@media all and (min-width: 220px) and (max-width: 615px){
+  .OrderList h2{
+  font-size: 1.5em;
+  }
+table th, table td{
+  font-size: 0.8em;
+}
+.ButtonOrder button{
+  font-size: 13px;
+  margin-right:0px;
+}
+.ButtonOrder {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 10px;
+}
+table td button{
+  font-size:0.6em;
+}
+.TableOrder{
+  max-width: 100%;
+}
 }

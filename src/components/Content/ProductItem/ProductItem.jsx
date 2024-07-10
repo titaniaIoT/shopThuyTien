@@ -17,7 +17,7 @@ function ProductItem({ Product, CollectionName, IDDoc }) {
 
   const HandleConfirmPopup = (Quantity, Notes, CustomerName) => {
     console.log(`${CustomerName} mua ${Quantity} ${name} ${Notes}`);
-    UpdateProductQuantity(CollectionName, IDDoc, name, Quantity,CustomerName,Notes);
+    UpdateProductQuantity(name, Quantity, CustomerName, Notes);
     SetShowPopup(false);
   };
 
@@ -30,7 +30,7 @@ function ProductItem({ Product, CollectionName, IDDoc }) {
         <button onClick={HandleBuyClick}>Mua</button>
       </div>
       {ShowPopup && (
-        <Popup OnClose={HandleClosePopup} OnConfirm={HandleConfirmPopup} />
+        <Popup OnClose={HandleClosePopup} OnConfirm={HandleConfirmPopup} ProductType={name} />
       )}
     </li>
   );
