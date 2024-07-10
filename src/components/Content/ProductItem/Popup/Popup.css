@@ -21,14 +21,14 @@
 
 .PopupInner h2 {
   margin-bottom: 3px;
-  font-family: courier, arial, helvetica;
+  font-family: 'Bookman Old Style', serif;
 }
 
 input {
   font-size: 1em;
   margin-bottom: 15px;
   padding: 5px 10px;
-  font-family: courier, arial, helvetica;
+  font-family: 'Bookman Old Style', serif;
 }
 
 button {
@@ -47,7 +47,7 @@ button {
   border: none;
   padding: 8px 16px;
   cursor: pointer;
-  font-family: courier, arial, helvetica;
+  font-family: 'Bookman Old Style', serif;
 }
 
 .ButtonContainer button:hover {

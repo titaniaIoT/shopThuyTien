@@ -46,7 +46,7 @@
   margin: 0;
   padding: 0;
   font-size: 1.4em;
-  font-family: courier, arial, helvetica;
+  font-family: 'Bookman Old Style', serif;
 }
 
 .OrderPopupButtons {
@@ -64,7 +64,7 @@
   border: none;
   padding: 8px 16px;
   cursor: pointer;
-  font-family: courier, arial, helvetica;
+  font-family: 'Bookman Old Style', serif;
 
 }
 
