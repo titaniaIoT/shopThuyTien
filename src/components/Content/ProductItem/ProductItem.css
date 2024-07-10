@@ -20,14 +20,14 @@
   
   .ProductInfo h3 {
     font-size: 1.2em;
-    font-family:courier,arial,helvetica;
+    font-family: 'Bookman Old Style', serif;
     margin: 0;
   }
   
   .ProductInfo p {
     color: #292929;
     margin: 0.3125em 0;
-    font-family:courier,arial,helvetica;
+    font-family: 'Bookman Old Style', serif;
   }
   
   .ProductInfo button {
@@ -38,7 +38,7 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-family:courier,arial,helvetica;
+    font-family: 'Bookman Old Style', serif;
     font-size: 1em;
   }
   
