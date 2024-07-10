@@ -44,15 +44,15 @@ function OrderList() {
 
   const HandleDeleteConfirm = async () => {
     if (CustomerToDelete) {
-      const { CustomerName, OrderId } = CustomerToDelete;
+      const { CustomerName, ProductName, OrderId } = CustomerToDelete;
       const OrderRef = doc(db, 'Order', OrderId);
       try {
         await updateDoc(OrderRef, {
-          [CustomerName]: deleteField(),
+          [`${CustomerName}.${ProductName}`]: deleteField(),
         });
         const UpdatedOrderData = OrderData.map(order => {
           if (order.id === OrderId && order.data[CustomerName]) {
-            delete order.data[CustomerName];
+            delete order.data[CustomerName][ProductName];
           }
           return order;
         });
@@ -60,7 +60,7 @@ function OrderList() {
         SetCustomerToDelete(null);
         SetShowConfirmModel(false);
       } catch (error) {
-        console.error('Lỗi khi xóa khách hàng:', error);
+        console.error('Lỗi khi xóa sản phẩm:', error);
       }
     }
   };
@@ -102,7 +102,7 @@ function OrderList() {
   const HandleDecrement = (CustomerName, ProductName, OrderId) => {
     const order = OrderData.find(order => order.id === OrderId && order.data[CustomerName]);
     if (order && order.data[CustomerName][ProductName] === 1) {
-      SetCustomerToDelete({ CustomerName, OrderId });
+      SetCustomerToDelete({ CustomerName, ProductName, OrderId });
       SetShowConfirmModel(true);
     } else {
       const UpdatedOrderData = OrderData.map(order => {
