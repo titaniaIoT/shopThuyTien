@@ -25,6 +25,7 @@ import XucXich from "../../assets/xucxich.png";
 import XucXichHoLo from "../../assets/xucxichholo.png";
 import PhoMaiQue from "../../assets/phomaique.png";
 import BanhTrang from "../../assets/banhtrang.png";
+import RauMaDuong from "../../assets/raumaduong.png";
 
 function Content({ Category }) {
   const Products = {
@@ -42,18 +43,19 @@ function Content({ Category }) {
       { id: 11, name: "Nước ngọt", image: Soft, price: "10.000" },
       { id: 12, name: "Nước mía", image: Mia, price: "10.000" },
       { id: 13, name: "Rau má đậu xanh", image: RauMa, price: "15.000" },
+      { id: 14, name: "Rau má đường", image: RauMaDuong, price: "10.000 - 15.000"}
     ],
     snacks: [
-      { id: 14, name: "Cá dây", image: CaDay, price: "5.000" },
-      { id: 15, name: "Cá viên", image: CaVien, price: "5.000" },
-      { id: 16, name: "Bò viên", image: BoVien, price: "5.000" },
-      { id: 17, name: "Tôm viên", image: TomVien, price: "5.000" },
-      { id: 18, name: "Tôm ô ngon", image: TomONgon, price: "5.000" },
-      { id: 19, name: "Hotdog", image: HotDog, price: "12.000" },
-      { id: 20, name: "Xúc xích", image: XucXich, price: "10.000" },
-      { id: 21, name: "Xúc xích hồ lô", image: XucXichHoLo, price: "5.000" },
-      { id: 22, name: "Phô mai que", image: PhoMaiQue, price: "7.000" },
-      { id: 23, name: "Bánh tráng", image: BanhTrang, price: "10.000" },
+      { id: 15, name: "Cá dây", image: CaDay, price: "5.000" },
+      { id: 16, name: "Cá viên", image: CaVien, price: "5.000" },
+      { id: 17, name: "Bò viên", image: BoVien, price: "5.000" },
+      { id: 18, name: "Tôm viên", image: TomVien, price: "5.000" },
+      { id: 19, name: "Tôm ô ngon", image: TomONgon, price: "5.000" },
+      { id: 20, name: "Hotdog", image: HotDog, price: "12.000" },
+      { id: 21, name: "Xúc xích", image: XucXich, price: "10.000" },
+      { id: 22, name: "Xúc xích hồ lô", image: XucXichHoLo, price: "5.000" },
+      { id: 23, name: "Phô mai que", image: PhoMaiQue, price: "7.000" },
+      { id: 24, name: "Bánh tráng", image: BanhTrang, price: "10.000" },
     ],
   };
 
