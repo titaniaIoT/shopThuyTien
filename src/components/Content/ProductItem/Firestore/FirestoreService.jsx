@@ -5,7 +5,6 @@ const UpdateProductQuantity = async (ProductType, Quantity, CustomerName, Notes)
   const OrderRef = doc(db, "Order", "hRZcMkkijPa1fw56o96l");
 
   try {
-    // Tạo dữ liệu để set vào document
     const orderData = {
       [CustomerName]: {
         [ProductType]: Quantity,
@@ -13,7 +12,6 @@ const UpdateProductQuantity = async (ProductType, Quantity, CustomerName, Notes)
       }
     };
 
-    // Thực hiện set dữ liệu vào document "Order" và merge với dữ liệu hiện tại
     await setDoc(OrderRef, orderData, { merge: true });
     console.log('Cập nhật đơn hàng thành công!');
   } catch (error) {

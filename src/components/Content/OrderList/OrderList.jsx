@@ -47,15 +47,28 @@ function OrderList() {
       const { CustomerName, ProductName, OrderId } = CustomerToDelete;
       const OrderRef = doc(db, 'Order', OrderId);
       try {
-        await updateDoc(OrderRef, {
-          [`${CustomerName}.${ProductName}`]: deleteField(),
-        });
+        const customerProducts = OrderData.find(order => order.id === OrderId).data[CustomerName];
+        if (Object.keys(customerProducts).length === 2) { 
+          await updateDoc(OrderRef, {
+            [CustomerName]: deleteField(),
+          });
+        } else {
+          await updateDoc(OrderRef, {
+            [`${CustomerName}.${ProductName}`]: deleteField(),
+          });
+        }
+
         const UpdatedOrderData = OrderData.map(order => {
           if (order.id === OrderId && order.data[CustomerName]) {
-            delete order.data[CustomerName][ProductName];
+            if (Object.keys(order.data[CustomerName]).length === 2) { 
+              delete order.data[CustomerName];
+            } else {
+              delete order.data[CustomerName][ProductName];
+            }
           }
           return order;
         });
+
         SetOrderData(UpdatedOrderData);
         SetCustomerToDelete(null);
         SetShowConfirmModel(false);
